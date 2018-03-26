@@ -1,7 +1,10 @@
 package top.guaiqihen.lips;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,15 +12,18 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +46,7 @@ public class Content_Template extends AppCompatActivity {
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     private boolean first = true;
+    String color;
     String describe;
     SwipeRefreshLayout srl;
     @SuppressLint("HandlerLeak")
@@ -151,6 +158,7 @@ public class Content_Template extends AppCompatActivity {
                     }
                     if (list.size()!=0) new getImage().start();
                 }
+
                 if (i==0) {
                     Toast.makeText(getApplicationContext(), "这里还没有东西呢，过会儿再来吧～", Toast.LENGTH_LONG + 5).show();
                     Content_Template.this.finish();
@@ -177,17 +185,17 @@ public class Content_Template extends AppCompatActivity {
     }
 
     public static String byte2hex(byte[] b) {
-        String hs = "";
-        String stmp = "";
-        for (int n = 0; n < b.length; n++) {
-            stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
+        StringBuilder hs = new StringBuilder();
+        String stmp;
+        for (byte aB : b) {
+            stmp = (Integer.toHexString(aB & 0XFF));
             if (stmp.length() == 1) {
-                hs = hs + "0" + stmp;
+                hs.append("0").append(stmp);
             } else {
-                hs = hs + stmp;
+                hs.append(stmp);
             }
         }
-        return hs;
+        return hs.toString();
     }
 
 
@@ -331,6 +339,7 @@ public class Content_Template extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         assert bundle != null;
         describe = bundle.getString("des");
+        color = bundle.getString("color");
         this.setTitle("色号介绍");
         new isNetworkOk().start();
 

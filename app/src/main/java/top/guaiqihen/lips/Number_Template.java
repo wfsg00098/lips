@@ -81,7 +81,8 @@ public class Number_Template extends AppCompatActivity {
                     btn.setText(con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1))));
                     btn.setAllCaps(false);
                     btn.setTextColor(Color.parseColor("#000000"));
-                    btn.setBackgroundColor(Color.parseColor(jsonobj.getString("color" + Integer.toString(i + 1))));
+                    final String color = jsonobj.getString("color" + Integer.toString(i + 1));
+                    btn.setBackgroundColor(Color.parseColor(color));
                     btn.setOnClickListener(new View.OnClickListener(){
                         public void onClick(View v) {
                             try{
@@ -89,6 +90,7 @@ public class Number_Template extends AppCompatActivity {
                                 Intent it = new Intent(getApplicationContext(), series.getClass());
                                 Bundle bundle=new Bundle();
                                 bundle.putString("des", describe + "_" + con);
+                                bundle.putString("color", color);
                                 it.putExtras(bundle);
                                 startActivity(it);
                             }catch (Exception e){

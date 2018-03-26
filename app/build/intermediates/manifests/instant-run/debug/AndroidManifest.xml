@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="top.guaiqihen.lips"
-    android:versionCode="1"
+    android:versionCode="4"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -37,6 +38,7 @@
         <activity android:name="top.guaiqihen.lips.Series_Template" />
         <activity android:name="top.guaiqihen.lips.Number_Template" />
         <activity android:name="top.guaiqihen.lips.Content_Template" />
+        <activity android:name="top.guaiqihen.lips.Sticker" />
 
         <meta-data
             android:name="android.support.VERSION"
