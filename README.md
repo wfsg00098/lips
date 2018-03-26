@@ -1,2 +1,2 @@
-# lips
-Beautiful Lips
+# lips-android
+Beautiful Lips Android Client
