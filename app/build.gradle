@@ -5,10 +5,11 @@ android {
     defaultConfig {
         applicationId "top.guaiqihen.lips"
         minSdkVersion 17
+        //noinspection OldTargetApi
         targetSdkVersion 23
         versionName '1.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 4
+        versionCode 5
     }
     buildTypes {
         release {

@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.*;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,10 +30,10 @@ import java.net.URL;
 import java.util.Vector;
 
 public class Number_Template extends AppCompatActivity {
-    private Vector<ImageView> list = new Vector<>();
-    private Vector<String> urls = new Vector<>();
     String describe;
     SwipeRefreshLayout srl;
+    private Vector<ImageView> list = new Vector<>();
+    private Vector<String> urls = new Vector<>();
     @SuppressLint("HandlerLeak")
     private Handler handler= new Handler(){
         @Override
@@ -45,11 +45,6 @@ public class Number_Template extends AppCompatActivity {
             }
         }
     };
-
-    private String covert_quot(String str)
-    {
-        return str.replace("&quot;","\"");
-    }
     @SuppressLint("HandlerLeak")
     private Handler stoprefresh= new Handler(){
         @Override
@@ -78,7 +73,8 @@ public class Number_Template extends AppCompatActivity {
                 for (i =0; i <count; i++) {
                     Button btn = new Button(getApplicationContext());
                     final String con = jsonobj.getString("number" + Integer.toString(i + 1));
-                    btn.setText(con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1))));
+                    final String show = con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
+                    btn.setText(show);
                     btn.setAllCaps(false);
                     btn.setTextColor(Color.parseColor("#000000"));
                     final String color = jsonobj.getString("color" + Integer.toString(i + 1));
@@ -91,6 +87,7 @@ public class Number_Template extends AppCompatActivity {
                                 Bundle bundle=new Bundle();
                                 bundle.putString("des", describe + "_" + con);
                                 bundle.putString("color", color);
+                                bundle.putString("show", show);
                                 it.putExtras(bundle);
                                 startActivity(it);
                             }catch (Exception e){
@@ -113,6 +110,10 @@ public class Number_Template extends AppCompatActivity {
         }
     };
 
+    private String covert_quot(String str) {
+        return str.replace("&quot;", "\"");
+    }
+
     private Bitmap getURLimage(String url) {
         Bitmap bmp = null;
         try {
@@ -130,81 +131,6 @@ public class Number_Template extends AppCompatActivity {
         return bmp;
     }
 
-
-    final private class getImage extends Thread{
-        @Override
-        public void run() {
-            try{
-                for (int i=0;i<list.size();i++) {
-                    Bitmap bmp = getURLimage(urls.get(i));
-                    Message msg = new Message();
-                    msg.obj = bmp;
-                    msg.what = i;
-                    handler.sendMessage(msg);
-                }
-                stoprefresh.sendEmptyMessage(1);
-            }catch (Exception e) {
-                Message msg = new Message();
-                msg.obj = e.toString();
-                ToastHandler.sendMessage(msg);
-            }
-        }
-    }
-    final private class isNetworkOk extends Thread{
-        @Override
-        public void run() {
-            try{
-                if (!isNetWorkOK(getApplicationContext())){
-                    Message msg = new Message();
-                    msg.obj = "无网络，请检查网络连接！";
-                    ToastHandler.sendMessage(msg);
-                }
-                while (!isNetWorkOK(getApplicationContext())){
-                    sleep(1000);
-                }
-                new getString(describe).start();
-            } catch (Exception e){
-                Message msg = new Message();
-                msg.obj = e.toString();
-                ToastHandler.sendMessage(msg);
-            }
-        }
-
-        boolean isNetWorkOK(Context context) {
-            try{
-                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                assert manager != null;
-                NetworkInfo ni = manager.getActiveNetworkInfo();
-                return ni != null && ni.isConnected();
-            }catch(Exception e){
-                return false;
-            }
-
-
-        }
-    }
-    final private class getString extends Thread{
-        String cat;
-        getString(String des) {
-            cat = des;
-        }
-        @Override
-        public void run() {
-            try{
-                HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/main.php?cat="+cat).openConnection();
-                url.connect();
-                BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
-                br.readLine();
-                Message msg = new Message();
-                msg.obj = br.readLine();
-                handler2.sendMessage(msg);
-            }catch (Exception e){
-                Message msg = new Message();
-                msg.obj = e.toString();
-                ToastHandler.sendMessage(msg);
-            }
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -238,8 +164,86 @@ public class Number_Template extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         assert bundle != null;
         describe = bundle.getString("des");
-        this.setTitle("选择色号");
+        String show = bundle.getString("show");
+        this.setTitle("选择色号 - " + show);
         new isNetworkOk().start();
 
+    }
+
+    final private class getImage extends Thread{
+        @Override
+        public void run() {
+            try{
+                for (int i=0;i<list.size();i++) {
+                    Bitmap bmp = getURLimage(urls.get(i));
+                    Message msg = new Message();
+                    msg.obj = bmp;
+                    msg.what = i;
+                    handler.sendMessage(msg);
+                }
+                stoprefresh.sendEmptyMessage(1);
+            }catch (Exception e) {
+                Message msg = new Message();
+                msg.obj = e.toString();
+                ToastHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    final private class isNetworkOk extends Thread{
+        @Override
+        public void run() {
+            try{
+                if (!isNetWorkOK(getApplicationContext())){
+                    Message msg = new Message();
+                    msg.obj = "无网络，请检查网络连接！";
+                    ToastHandler.sendMessage(msg);
+                }
+                while (!isNetWorkOK(getApplicationContext())){
+                    sleep(1000);
+                }
+                new getString(describe).start();
+            } catch (Exception e){
+                Message msg = new Message();
+                msg.obj = e.toString();
+                ToastHandler.sendMessage(msg);
+            }
+        }
+
+        boolean isNetWorkOK(Context context) {
+            try{
+                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                assert manager != null;
+                NetworkInfo ni = manager.getActiveNetworkInfo();
+                return ni != null && ni.isConnected();
+            }catch(Exception e){
+                return false;
+            }
+
+
+        }
+    }
+
+    final private class getString extends Thread{
+        String cat;
+        getString(String des) {
+            cat = des;
+        }
+        @Override
+        public void run() {
+            try{
+                HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/main.php?cat="+cat).openConnection();
+                url.connect();
+                BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
+                br.readLine();
+                Message msg = new Message();
+                msg.obj = br.readLine();
+                handler2.sendMessage(msg);
+            }catch (Exception e){
+                Message msg = new Message();
+                msg.obj = e.toString();
+                ToastHandler.sendMessage(msg);
+            }
+        }
     }
 }

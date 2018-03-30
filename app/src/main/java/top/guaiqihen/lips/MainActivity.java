@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,7 +22,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -122,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
                 int i;
                 for (i = 0; i < count; i++) {
                     Button btn = new Button(MainActivity.this);
-                    btn.setText(covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1))));
+                    final String show = covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
+                    btn.setText(show);
                     final String con = jsonobj.getString("name" + Integer.toString(i + 1));
                     btn.setTextColor(Color.parseColor("#000000"));
                     btn.setBackgroundColor(Color.parseColor("#eaeaea"));
@@ -134,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent it = new Intent(getApplicationContext(), series.getClass());
                                 Bundle bundle = new Bundle();
                                 bundle.putString("des", con);
+                                bundle.putString("show", show);
                                 it.putExtras(bundle);
                                 startActivity(it);
                             } catch (Exception e) {
@@ -268,43 +271,6 @@ public class MainActivity extends AppCompatActivity {
         confirm.create().show();
     }
 
-    private Bitmap getURLimage(String url) {
-        Bitmap bmp = null;
-        try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setConnectTimeout(6000);
-            conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bmp = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (Exception e) {
-            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
-        }
-        return bmp;
-    }
-
-
-    final private class getImage extends Thread {
-        @Override
-        public void run() {
-            try {
-                for (int i = 0; i < list.size(); i++) {
-                    Bitmap bmp = getURLimage(urls.get(i));
-                    Message msg = new Message();
-                    msg.obj = bmp;
-                    msg.what = i;
-                    handler.sendMessage(msg);
-                }
-                stoprefresh.sendEmptyMessage(1);
-            } catch (Exception e) {
-                Message msg = new Message();
-                msg.obj = e.toString();
-                ToastHandler.sendMessage(msg);
-            }
-        }
-    }
 
     final private class getString extends Thread {
         @Override
@@ -525,11 +491,11 @@ public class MainActivity extends AppCompatActivity {
         long size = 0;
         try {
             File[] fileList = file.listFiles();
-            for (int i = 0; i < fileList.length; i++) {
-                if (fileList[i].isDirectory()) {
-                    size = size + getFolderSize(fileList[i]);
+            for (File aFileList : fileList) {
+                if (aFileList.isDirectory()) {
+                    size = size + getFolderSize(aFileList);
                 } else {
-                    size = size + fileList[i].length();
+                    size = size + aFileList.length();
                 }
             }
         } catch (Exception e) {

@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.*;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,10 +30,10 @@ import java.net.URL;
 import java.util.Vector;
 
 public class Series_Template extends AppCompatActivity {
-    private Vector<ImageView> list = new Vector<>();
-    private Vector<String> urls = new Vector<>();
     String describe;
     SwipeRefreshLayout srl;
+    private Vector<ImageView> list = new Vector<>();
+    private Vector<String> urls = new Vector<>();
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -45,11 +45,6 @@ public class Series_Template extends AppCompatActivity {
             }
         }
     };
-
-    private String covert_quot(String str) {
-        return str.replace("&quot;", "\"");
-    }
-
     @SuppressLint("HandlerLeak")
     private Handler stoprefresh = new Handler() {
         @Override
@@ -76,7 +71,8 @@ public class Series_Template extends AppCompatActivity {
                 int i;
                 for (i = 0; i < count; i++) {
                     Button btn = new Button(getApplicationContext());
-                    btn.setText(covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1))));
+                    final String show = covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
+                    btn.setText(show);
                     final String con = jsonobj.getString("name" + Integer.toString(i + 1));
                     btn.setAllCaps(false);
                     btn.setTextColor(Color.parseColor("#000000"));
@@ -88,6 +84,7 @@ public class Series_Template extends AppCompatActivity {
                                 Intent it = new Intent(getApplicationContext(), series.getClass());
                                 Bundle bundle = new Bundle();
                                 bundle.putString("des", describe + "_" + con);
+                                bundle.putString("show", show);
                                 it.putExtras(bundle);
                                 startActivity(it);
                             } catch (Exception e) {
@@ -109,6 +106,10 @@ public class Series_Template extends AppCompatActivity {
         }
     };
 
+    private String covert_quot(String str) {
+        return str.replace("&quot;", "\"");
+    }
+
     private Bitmap getURLimage(String url) {
         Bitmap bmp = null;
         try {
@@ -126,6 +127,42 @@ public class Series_Template extends AppCompatActivity {
         return bmp;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.series_template);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.parseColor("#FF4081"));
+        }
+
+        srl = findViewById(R.id.series_srl);
+        srl.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light, android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                srl.setRefreshing(true);
+                LinearLayout ll = findViewById(R.id.ll_t);
+                ll.removeAllViews();
+                list.clear();
+                urls.clear();
+                new isNetworkOk().start();
+            }
+        });
+        srl.setRefreshing(true);
+        LinearLayout ll_t = findViewById(R.id.ll_t);
+        ll_t.removeAllViews();
+        list.clear();
+        urls.clear();
+        Bundle bundle = this.getIntent().getExtras();
+        assert bundle != null;
+        describe = bundle.getString("des");
+        String show = bundle.getString("show");
+        this.setTitle("选择系列 - " + show);
+        new isNetworkOk().start();
+
+    }
 
     final private class getImage extends Thread {
         @Override
@@ -204,41 +241,5 @@ public class Series_Template extends AppCompatActivity {
                 ToastHandler.sendMessage(msg);
             }
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.series_template);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.parseColor("#FF4081"));
-        }
-
-        srl = findViewById(R.id.series_srl);
-        srl.setColorSchemeResources(android.R.color.holo_blue_light,
-                android.R.color.holo_red_light, android.R.color.holo_orange_light,
-                android.R.color.holo_green_light);
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srl.setRefreshing(true);
-                LinearLayout ll = findViewById(R.id.ll_t);
-                ll.removeAllViews();
-                list.clear();
-                urls.clear();
-                new isNetworkOk().start();
-            }
-        });
-        srl.setRefreshing(true);
-        LinearLayout ll_t = findViewById(R.id.ll_t);
-        ll_t.removeAllViews();
-        list.clear();
-        urls.clear();
-        Bundle bundle = this.getIntent().getExtras();
-        assert bundle != null;
-        describe = bundle.getString("des");
-        this.setTitle("选择系列");
-        new isNetworkOk().start();
-
     }
 }
