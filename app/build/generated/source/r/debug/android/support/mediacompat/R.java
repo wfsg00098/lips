@@ -77,10 +77,10 @@ public final class R {
         public static final int blocking = 0x7f080027;
         public static final int cancel_action = 0x7f08002a;
         public static final int chronometer = 0x7f080030;
-        public static final int end_padder = 0x7f080045;
-        public static final int forever = 0x7f08004f;
-        public static final int icon = 0x7f080053;
-        public static final int icon_group = 0x7f080054;
+        public static final int end_padder = 0x7f080046;
+        public static final int forever = 0x7f080050;
+        public static final int icon = 0x7f080054;
+        public static final int icon_group = 0x7f080055;
         public static final int info = 0x7f080059;
         public static final int italic = 0x7f08005a;
         public static final int line1 = 0x7f08005e;
