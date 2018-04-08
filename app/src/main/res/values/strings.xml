@@ -4,4 +4,8 @@
     <string name="action_exit">退出</string>
     <string name="copyright">Copyright © 2017-%s . 王七喜♏ All rights reserved. Ver %d.</string>
     <string name="action_clear">清除缓存(%s)</string>
+
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

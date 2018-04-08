@@ -19,16 +19,21 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".About" />
+        <activity android:name=".Series_Template" />
+        <activity android:name=".Number_Template" />
+        <activity android:name=".Content_Template" />
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".About" />
-        <activity android:name=".Series_Template" />
-        <activity android:name=".Number_Template" />
-        <activity android:name=".Content_Template" />
     </application>
 
 </manifest>
