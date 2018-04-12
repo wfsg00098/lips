@@ -73,14 +73,8 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash_screen);
 
 
-        ImageView img = new ImageView(this);
-        img.setImageResource(R.drawable.splash_screen);
-        ConstraintLayout cl = findViewById(R.id.cl);
+        getWindow().setBackgroundDrawableResource(R.drawable.splash);
 
-        img.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        cl.addView(img);
-        img.setAdjustViewBounds(true);
-        img.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
         new wait().start();

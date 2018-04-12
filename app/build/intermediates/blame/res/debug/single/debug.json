@@ -24,6 +24,10 @@
         "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\ce40dca5b66032162df18e2d9e2e687c\\res\\anim\\abc_slide_in_bottom.xml"
     },
     {
+        "merged": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\res\\merged\\debug\\drawable_splash.png.flat",
+        "source": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\src\\main\\res\\drawable\\splash.png"
+    },
+    {
         "merged": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_ab_share_pack_mtrl_alpha.9.png.flat",
         "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\ce40dca5b66032162df18e2d9e2e687c\\res\\drawable-mdpi-v4\\abc_ab_share_pack_mtrl_alpha.9.png"
     },
@@ -554,10 +558,6 @@
     {
         "merged": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_abc_list_pressed_holo_light.9.png.flat",
         "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\ce40dca5b66032162df18e2d9e2e687c\\res\\drawable-xxhdpi-v4\\abc_list_pressed_holo_light.9.png"
-    },
-    {
-        "merged": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\res\\merged\\debug\\drawable_splash_screen.jpg.flat",
-        "source": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\src\\main\\res\\drawable\\splash_screen.jpg"
     },
     {
         "merged": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_switch_track_mtrl_alpha.9.png.flat",
