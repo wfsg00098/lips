@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.View;
@@ -42,6 +45,24 @@ public class Content_Template extends AppCompatActivity {
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     private boolean first = true;
+
+    int max(int a, int b) {
+        if (a >= b) return a;
+        else return b;
+    }
+
+    int min(int a, int b) {
+        if (a <= b) return a;
+        else return b;
+    }
+
+    boolean reverse(int r, int g, int b) {
+        double MIN, MAX, L;
+        MAX = (double) max(r, max(g, b)) / 255.0;
+        MIN = (double) min(r, min(g, b)) / 255.0;
+        L = (MAX + MIN) / 2.0;
+        return L > 0.5;
+    }
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -242,14 +263,27 @@ public class Content_Template extends AppCompatActivity {
         assert bundle != null;
         describe = bundle.getString("des");
         color = bundle.getString("color");
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(color)));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.parseColor(color));
-            getWindow().setStatusBarColor(Color.parseColor(color));
+        String show = bundle.getString("show");
+        SpannableString msp = new SpannableString("色号介绍 - " + show);
+        msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int cl = Color.parseColor(color);
+        int red = (cl & 0xff0000) >> 16;
+        int green = (cl & 0x00ff00) >> 8;
+        int blue = cl & 0x0000ff;
+        if (reverse(red, green, blue)) {
+            msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
         }
 
-        String show = bundle.getString("show");
-        this.setTitle("色号介绍 - " + show);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(cl));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(cl);
+            getWindow().setStatusBarColor(cl);
+        }
+
+        this.setTitle(msp);
         new isNetworkOk().start();
 
     }

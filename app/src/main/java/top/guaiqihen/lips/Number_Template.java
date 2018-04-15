@@ -34,6 +34,24 @@ public class Number_Template extends AppCompatActivity {
     SwipeRefreshLayout srl;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
+
+    int max(int a, int b) {
+        if (a >= b) return a;
+        else return b;
+    }
+
+    int min(int a, int b) {
+        if (a <= b) return a;
+        else return b;
+    }
+
+    boolean reverse(int r, int g, int b) {
+        double MIN, MAX, L;
+        MAX = (double) max(r, max(g, b)) / 255.0;
+        MIN = (double) min(r, min(g, b)) / 255.0;
+        L = (MAX + MIN) / 2.0;
+        return L > 0.5;
+    }
     @SuppressLint("HandlerLeak")
     private Handler handler= new Handler(){
         @Override
@@ -76,9 +94,18 @@ public class Number_Template extends AppCompatActivity {
                     final String show = con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
                     btn.setText(show);
                     btn.setAllCaps(false);
-                    btn.setTextColor(Color.parseColor("#000000"));
                     final String color = jsonobj.getString("color" + Integer.toString(i + 1));
-                    btn.setBackgroundColor(Color.parseColor(color));
+                    int cl = Color.parseColor(color);
+                    int red = (cl & 0xff0000) >> 16;
+                    int green = (cl & 0x00ff00) >> 8;
+                    int blue = cl & 0x0000ff;
+                    btn.setBackgroundColor(cl);
+                    if (reverse(red, green, blue)) {
+                        btn.setTextColor(Color.parseColor("#000000"));
+                    } else {
+                        btn.setTextColor(Color.parseColor("#ffffff"));
+                    }
+
                     btn.setOnClickListener(new View.OnClickListener(){
                         public void onClick(View v) {
                             try{
