@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +68,13 @@ public class Settings extends AppCompatActivity {
             findViewById(R.id.imageView2).setOnClickListener(new JumpToWebSite());
             findViewById(R.id.textView9).setOnClickListener(new JumpToWebSite());
             findViewById(R.id.textView11).setOnClickListener(new JumpToWebSite());
+            tv = findViewById(R.id.loginTextView);
+            if (GlobalSettings.isLogged) tv.setText("欢迎你，" + GlobalSettings.nickname + "！");
+            else tv.setText("未登录，请点击登录");
         } catch (Exception ignored) {}
+
+
+
 
         ImageView img = findViewById(R.id.imageView3);
         img.setImageDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
@@ -73,18 +82,21 @@ public class Settings extends AppCompatActivity {
         Button btn = findViewById(R.id.AboutButton);
         btn.setOnClickListener(v -> startActivity(new Intent(Settings.this, About.class)));
 
+        btn = findViewById(R.id.LoginButton);
+        btn.setOnClickListener(v -> {
+            if (GlobalSettings.isLogged) startActivity(new Intent(Settings.this, User_Manager.class));
+            else startActivity(new Intent(Settings.this, Login.class));
+        });
 
         btn = findViewById(R.id.CacheButton);
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                try{
-                    GlobalSettings.deleteFilesByDirectory(getExternalCacheDir());
-                    Toast.makeText(Settings.this, "清理完毕！", Toast.LENGTH_LONG + 5).show();
-                    TextView tv = findViewById(R.id.CacheSizeTextView);
-                    String size = GlobalSettings.getCacheSize(getExternalCacheDir());
-                    tv.setText(size);
-                }catch (Exception ignored){}
-            }
+        btn.setOnClickListener(v -> {
+            try{
+                GlobalSettings.deleteFilesByDirectory(getExternalCacheDir());
+                Toast.makeText(Settings.this, "清理完毕！", Toast.LENGTH_LONG + 5).show();
+                TextView tv = findViewById(R.id.CacheSizeTextView);
+                String size = GlobalSettings.getCacheSize(getExternalCacheDir());
+                tv.setText(size);
+            }catch (Exception ignored){}
         });
 
         btn = findViewById(R.id.ThemeColorButton);
@@ -157,8 +169,23 @@ public class Settings extends AppCompatActivity {
 
         final Switch sw = findViewById(R.id.switch2);
         if (GlobalSettings.AutoUpdate) sw.setChecked(true);
+        else sw.setChecked(false);
         sw.setOnClickListener(v -> GlobalSettings.SetAutoUpdate(sw.isChecked()));
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            TextView tv = findViewById(R.id.loginTextView);
+            if (GlobalSettings.isLogged) tv.setText("欢迎你，" + GlobalSettings.nickname + "！");
+            else tv.setText("未登录，请点击登录");
+            Button btn = findViewById(R.id.LoginButton);
+            btn.setOnClickListener(v -> {
+                if (GlobalSettings.isLogged) startActivity(new Intent(Settings.this, User_Manager.class));
+                else startActivity(new Intent(Settings.this, Login.class));
+            });
+        }
+    }
 }
