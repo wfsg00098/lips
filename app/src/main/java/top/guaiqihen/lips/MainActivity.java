@@ -23,6 +23,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -126,19 +129,17 @@ public class MainActivity extends AppCompatActivity {
                     btn.setTextColor(Color.parseColor("#000000"));
                     btn.setBackgroundColor(Color.parseColor("#eaeaea"));
                     btn.setAllCaps(false);
-                    btn.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            try {
-                                Series_Template series = new Series_Template();
-                                Intent it = new Intent(getApplicationContext(), series.getClass());
-                                Bundle bundle = new Bundle();
-                                bundle.putString("des", con);
-                                bundle.putString("show", show);
-                                it.putExtras(bundle);
-                                startActivity(it);
-                            } catch (Exception e) {
-                                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
-                            }
+                    btn.setOnClickListener(v -> {
+                        try {
+                            Series_Template series = new Series_Template();
+                            Intent it = new Intent(getApplicationContext(), series.getClass());
+                            Bundle bundle = new Bundle();
+                            bundle.putString("des", con);
+                            bundle.putString("show", show);
+                            it.putExtras(bundle);
+                            startActivity(it);
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
                         }
                     });
                     ll.addView(btn);
@@ -259,12 +260,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         confirm.setNegativeButton("取消",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MainActivity.this, "更新已取消", Toast.LENGTH_LONG + 5).show();
-                    }
-                });
+                (dialog, which) -> Toast.makeText(MainActivity.this, "更新已取消", Toast.LENGTH_LONG + 5).show());
         confirm.create().show();
     }
 
@@ -329,24 +325,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    int max(int a, int b) {
-        if (a >= b) return a;
-        else return b;
-    }
-
-    int min(int a, int b) {
-        if (a <= b) return a;
-        else return b;
-    }
-
-    boolean reverse(int r, int g, int b) {
-        double MIN, MAX, L;
-        MAX = (double) max(r, max(g, b)) / 255.0;
-        MIN = (double) min(r, min(g, b)) / 255.0;
-        L = (MAX + MIN) / 2.0;
-        return L > 0.5;
-    }
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -355,40 +333,37 @@ public class MainActivity extends AppCompatActivity {
 
         GlobalSettings.LoadSettings(getApplicationContext().getFilesDir().getPath());
 
-
-        this.setTitle("选择品牌");
         if (GlobalSettings.AutoUpdate) new GetUpdate().start();
 
+        SpannableString msp = new SpannableString("选择品牌");
+        msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(GlobalSettings.ThemeColor);
             getWindow().setStatusBarColor(GlobalSettings.ThemeColor);
         }
 
-        int red = (GlobalSettings.ThemeColor & 0xff0000) >> 16;
-        int green = (GlobalSettings.ThemeColor & 0x00ff00) >> 8;
-        int blue = GlobalSettings.ThemeColor & 0x0000ff;
-        if (reverse(red, green, blue)) {
+        if (GlobalSettings.reverse()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
+            msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-
+        setTitle(msp);
 
         srl = findViewById(R.id.main_srl);
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srl.setRefreshing(true);
-                LinearLayout ll = findViewById(R.id.LL);
-                ll.removeAllViews();
-                list.clear();
-                urls.clear();
-                new isNetworkOk().start();
-            }
+        srl.setOnRefreshListener(() -> {
+            srl.setRefreshing(true);
+            LinearLayout ll = findViewById(R.id.LL);
+            ll.removeAllViews();
+            list.clear();
+            urls.clear();
+            new isNetworkOk().start();
         });
         srl.setRefreshing(true);
         LinearLayout ll = findViewById(R.id.LL);
@@ -441,13 +416,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        try {
-            String data = getString(R.string.action_clear);
-            String size = getCacheSize(getExternalCacheDir());
-            menu.findItem(R.id.action_clear).setTitle(String.format(data, size));
-        } catch (Exception e) {
-            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
-        }
         return true;
     }
 
@@ -460,21 +428,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
-            startActivity(new Intent(MainActivity.this, About.class));
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Settings.class));
             return true;
         }
-
-        if (id == R.id.action_clear) {
-            try {
-                deleteFilesByDirectory(this.getExternalCacheDir());
-                Toast.makeText(MainActivity.this, "清理完成！", Toast.LENGTH_LONG + 5).show();
-                return true;
-            } catch (Exception e) {
-                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
-            }
-        }
-
 
         if (id == R.id.action_exit) {
             finish();
@@ -484,64 +441,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static String getFormatSize(double size) {
-        double kiloByte = size / 1024;
-        if (kiloByte < 1) {
-            return size + "Byte";
-        }
 
-        double megaByte = kiloByte / 1024;
-        if (megaByte < 1) {
-            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
-            return result1.setScale(2, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "KB";
-        }
-
-        double gigaByte = megaByte / 1024;
-        if (gigaByte < 1) {
-            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
-            return result2.setScale(2, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "MB";
-        }
-
-        double teraBytes = gigaByte / 1024;
-        if (teraBytes < 1) {
-            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
-            return result3.setScale(2, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "GB";
-        }
-        BigDecimal result4 = new BigDecimal(teraBytes);
-        return result4.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString()
-                + "TB";
-    }
-
-    public static long getFolderSize(File file) throws Exception {
-        long size = 0;
-        try {
-            File[] fileList = file.listFiles();
-            for (File aFileList : fileList) {
-                if (aFileList.isDirectory()) {
-                    size = size + getFolderSize(aFileList);
-                } else {
-                    size = size + aFileList.length();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return size;
-    }
-
-    public static String getCacheSize(File file) throws Exception {
-        return getFormatSize(getFolderSize(file));
-    }
-
-    private static void deleteFilesByDirectory(File directory) {
-        if (directory != null && directory.exists() && directory.isDirectory()) {
-            for (File item : directory.listFiles()) {
-                item.delete();
-            }
-        }
-    }
 
 }

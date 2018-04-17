@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -14,6 +15,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -131,9 +135,29 @@ public class Series_Template extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.series_template);
+        Bundle bundle = this.getIntent().getExtras();
+        assert bundle != null;
+        describe = bundle.getString("des");
+        String show = bundle.getString("show");
+
+
+        SpannableString msp = new SpannableString("选择系列 - " + show);
+
+        msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.parseColor("#FF4081"));
+            getWindow().setNavigationBarColor(GlobalSettings.ThemeColor);
+            getWindow().setStatusBarColor(GlobalSettings.ThemeColor);
         }
+
+        if (GlobalSettings.reverse()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+            msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        setTitle(msp);
 
         srl = findViewById(R.id.series_srl);
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
@@ -155,11 +179,8 @@ public class Series_Template extends AppCompatActivity {
         ll_t.removeAllViews();
         list.clear();
         urls.clear();
-        Bundle bundle = this.getIntent().getExtras();
-        assert bundle != null;
-        describe = bundle.getString("des");
-        String show = bundle.getString("show");
-        this.setTitle("选择系列 - " + show);
+
+
         new isNetworkOk().start();
 
     }

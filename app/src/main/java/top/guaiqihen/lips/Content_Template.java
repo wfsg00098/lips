@@ -45,24 +45,6 @@ public class Content_Template extends AppCompatActivity {
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     private boolean first = true;
-
-    int max(int a, int b) {
-        if (a >= b) return a;
-        else return b;
-    }
-
-    int min(int a, int b) {
-        if (a <= b) return a;
-        else return b;
-    }
-
-    boolean reverse(int r, int g, int b) {
-        double MIN, MAX, L;
-        MAX = (double) max(r, max(g, b)) / 255.0;
-        MIN = (double) min(r, min(g, b)) / 255.0;
-        L = (MAX + MIN) / 2.0;
-        return L > 0.5;
-    }
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -270,7 +252,7 @@ public class Content_Template extends AppCompatActivity {
         int red = (cl & 0xff0000) >> 16;
         int green = (cl & 0x00ff00) >> 8;
         int blue = cl & 0x0000ff;
-        if (reverse(red, green, blue)) {
+        if (GlobalSettings.reverse(red, green, blue)) {
             msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -284,6 +266,7 @@ public class Content_Template extends AppCompatActivity {
         }
 
         this.setTitle(msp);
+        new isNetworkOk().start();
         new isNetworkOk().start();
 
     }
