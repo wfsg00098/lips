@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
 MERGED from [com.android.support:design:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\4e0b447634969856c2d48812226bd19d\AndroidManifest.xml:17:1-31:12
 MERGED from [com.android.support:appcompat-v7:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.1.0.aar\98c1ff8bcdfab85c8e3197240811f126\AndroidManifest.xml:17:1-31:12
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\ee3989c7ab8cb86b6bdff1fa57949c9e\AndroidManifest.xml:2:1-11:12
@@ -18,20 +18,20 @@ MERGED from [com.android.support:support-core-utils:26.1.0] C:\Users\Badegg\.gra
 MERGED from [com.android.support:support-core-ui:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.1.0.aar\ec7cb0c4e2a61e3b540217cdea28d047\AndroidManifest.xml:17:1-31:12
 MERGED from [com.android.support:support-compat:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\support-compat-26.1.0.aar\fd8856bd1bcb0a281959cff2743a8432\AndroidManifest.xml:17:1-31:12
 MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\c02f83577f4cba36112e95ddf55bdfb1\AndroidManifest.xml:17:1-30:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
-INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
 	package
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:3:5-33
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-39:12
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:1-38:12
 		INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:2:11-69
@@ -60,7 +60,7 @@ ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManife
 	android:name
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:10:22-62
 application
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:12:5-37:19
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:12:5-36:19
 MERGED from [com.android.support:design:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\4e0b447634969856c2d48812226bd19d\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:design:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\4e0b447634969856c2d48812226bd19d\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:appcompat-v7:26.1.0] C:\Users\Badegg\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.1.0.aar\98c1ff8bcdfab85c8e3197240811f126\AndroidManifest.xml:25:5-29:19
@@ -100,7 +100,7 @@ MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\Badegg\.gradle\cache
 	android:theme
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:17:9-40
 activity#top.guaiqihen.lips.MainActivity
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:18:9-22:20
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:18:9-21:68
 	android:label
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:20:13-45
 	android:theme
@@ -108,37 +108,41 @@ ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManife
 	android:name
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:19:13-41
 activity#top.guaiqihen.lips.About
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:23:9-43
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:22:9-43
 	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:23:19-40
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:22:19-40
 activity#top.guaiqihen.lips.Series_Template
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:23:9-53
+	android:name
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:23:19-50
+activity#top.guaiqihen.lips.Number_Template
 ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:24:9-53
 	android:name
 		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:24:19-50
-activity#top.guaiqihen.lips.Number_Template
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:25:9-53
-	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:25:19-50
 activity#top.guaiqihen.lips.Content_Template
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:26:9-54
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:25:9-54
 	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:26:19-51
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:25:19-51
 activity#top.guaiqihen.lips.SplashScreen
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:27:9-36:20
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:26:9-34:20
 	android:theme
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:29:13-83
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:28:13-83
 	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:28:13-41
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:27:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:31:13-35:29
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:29:13-33:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:32:17-69
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:30:17-69
 	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:32:25-66
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:30:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:34:17-77
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:32:17-77
 	android:name
-		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:34:27-74
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:32:27-74
+activity#top.guaiqihen.lips.Settings
+ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:35:9-55
+	android:name
+		ADDED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml:35:19-43
 uses-sdk
 INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Badegg\AndroidStudioProjects\lips\app\src\main\AndroidManifest.xml
