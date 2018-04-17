@@ -7,9 +7,9 @@ android {
         minSdkVersion 17
         //noinspection OldTargetApi
         targetSdkVersion 23
-        versionName '1.0'
+        versionName '1.08'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 5
+        versionCode 8
     }
     buildTypes {
         release {
@@ -18,6 +18,10 @@ android {
         }
     }
     productFlavors {
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 

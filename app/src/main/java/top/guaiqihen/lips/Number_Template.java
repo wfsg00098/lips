@@ -6,14 +6,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.*;
+import android.provider.Settings;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -74,25 +80,31 @@ public class Number_Template extends AppCompatActivity {
                     Button btn = new Button(getApplicationContext());
                     final String con = jsonobj.getString("number" + Integer.toString(i + 1));
                     final String show = con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
+                    final String color = jsonobj.getString("color" + Integer.toString(i + 1));
                     btn.setText(show);
                     btn.setAllCaps(false);
-                    btn.setTextColor(Color.parseColor("#000000"));
-                    final String color = jsonobj.getString("color" + Integer.toString(i + 1));
+                    int cl = Color.parseColor(color);
+                    int red = (cl & 0xff0000) >> 16;
+                    int green = (cl & 0x00ff00) >> 8;
+                    int blue = cl & 0x0000ff;
+                    if (GlobalSettings.reverse(red, green, blue)) {
+                        btn.setTextColor(Color.parseColor("#000000"));
+                    } else {
+                        btn.setTextColor(Color.parseColor("#ffffff"));
+                    }
                     btn.setBackgroundColor(Color.parseColor(color));
-                    btn.setOnClickListener(new View.OnClickListener(){
-                        public void onClick(View v) {
-                            try{
-                                Content_Template series = new Content_Template();
-                                Intent it = new Intent(getApplicationContext(), series.getClass());
-                                Bundle bundle=new Bundle();
-                                bundle.putString("des", describe + "_" + con);
-                                bundle.putString("color", color);
-                                bundle.putString("show", show);
-                                it.putExtras(bundle);
-                                startActivity(it);
-                            }catch (Exception e){
-                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
-                            }
+                    btn.setOnClickListener(v -> {
+                        try{
+                            Content_Template series = new Content_Template();
+                            Intent it = new Intent(getApplicationContext(), series.getClass());
+                            Bundle bundle=new Bundle();
+                            bundle.putString("des", describe + "_" + con);
+                            bundle.putString("color", color);
+                            bundle.putString("show", show);
+                            it.putExtras(bundle);
+                            startActivity(it);
+                        }catch (Exception e){
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
                         }
                     });
                     ll_n.addView(btn);
@@ -136,9 +148,27 @@ public class Number_Template extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.number_template);
 
+        Bundle bundle = this.getIntent().getExtras();
+        assert bundle != null;
+        describe = bundle.getString("des");
+        String show = bundle.getString("show");
+
+        SpannableString msp = new SpannableString("选择系列 - " + show);
+        msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.parseColor("#FF4081"));
+            getWindow().setNavigationBarColor(GlobalSettings.ThemeColor);
+            getWindow().setStatusBarColor(GlobalSettings.ThemeColor);
         }
+
+        if (GlobalSettings.reverse()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+            msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        setTitle(msp);
 
         srl = findViewById(R.id.number_srl);
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
@@ -161,11 +191,7 @@ public class Number_Template extends AppCompatActivity {
         ll_n.removeAllViews();
         list.clear();
         urls.clear();
-        Bundle bundle = this.getIntent().getExtras();
-        assert bundle != null;
-        describe = bundle.getString("des");
-        String show = bundle.getString("show");
-        this.setTitle("选择色号 - " + show);
+
         new isNetworkOk().start();
 
     }
