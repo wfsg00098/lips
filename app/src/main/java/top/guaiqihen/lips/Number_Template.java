@@ -174,16 +174,13 @@ public class Number_Template extends AppCompatActivity {
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srl.setRefreshing(true);
-                LinearLayout ll = findViewById(R.id.ll_n);
-                ll.removeAllViews();
-                list.clear();
-                urls.clear();
-                new isNetworkOk().start();
-            }
+        srl.setOnRefreshListener(() -> {
+            srl.setRefreshing(true);
+            LinearLayout ll = findViewById(R.id.ll_n);
+            ll.removeAllViews();
+            list.clear();
+            urls.clear();
+            new isNetworkOk().start();
         });
 
         srl.setRefreshing(true);
@@ -193,7 +190,7 @@ public class Number_Template extends AppCompatActivity {
         urls.clear();
 
         new isNetworkOk().start();
-
+        if (GlobalSettings.isLogged) new GlobalSettings.logger("浏览系列_" + show).start();
     }
 
     final private class getImage extends Thread{

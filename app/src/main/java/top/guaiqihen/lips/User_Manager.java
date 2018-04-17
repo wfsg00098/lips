@@ -37,6 +37,9 @@ public class User_Manager extends AppCompatActivity {
 
 
         Button logout = findViewById(R.id.logout);
-        logout.setOnClickListener(v -> GlobalSettings.Logout());
+        logout.setOnClickListener(v -> {
+            GlobalSettings.Logout();
+            if (GlobalSettings.isLogged) new GlobalSettings.logger("注销").start();
+        });
     }
 }

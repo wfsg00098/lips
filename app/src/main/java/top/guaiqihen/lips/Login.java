@@ -29,6 +29,7 @@ public class Login extends AppCompatActivity {
             GlobalSettings.password = "";
             if (msg.what == 1){
                 Toast.makeText(getApplicationContext(), "登录成功！", Toast.LENGTH_LONG + 5).show();
+                if (GlobalSettings.isLogged) new GlobalSettings.logger("登录").start();
                 finish();
             }else{
                 Toast.makeText(getApplicationContext(), "登录失败！", Toast.LENGTH_LONG + 5).show();
