@@ -198,17 +198,14 @@ public class Content_Template extends AppCompatActivity {
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srl.setRefreshing(true);
-                LinearLayout ll = findViewById(R.id.ll_c);
-                ll.removeAllViews();
-                list.clear();
-                urls.clear();
-                first = false;
-                new isNetworkOk().start();
-            }
+        srl.setOnRefreshListener(() -> {
+            srl.setRefreshing(true);
+            LinearLayout ll = findViewById(R.id.ll_c);
+            ll.removeAllViews();
+            list.clear();
+            urls.clear();
+            first = false;
+            new isNetworkOk().start();
         });
         srl.setRefreshing(true);
 
@@ -242,8 +239,7 @@ public class Content_Template extends AppCompatActivity {
 
         this.setTitle(msp);
         new isNetworkOk().start();
-        new isNetworkOk().start();
-
+        if (GlobalSettings.isLogged) new GlobalSettings.logger("浏览色号_" + show).start();
     }
 
     final private class getImage extends Thread {

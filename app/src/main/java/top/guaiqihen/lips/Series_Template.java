@@ -81,19 +81,17 @@ public class Series_Template extends AppCompatActivity {
                     btn.setAllCaps(false);
                     btn.setTextColor(Color.parseColor("#000000"));
                     btn.setBackgroundColor(Color.parseColor("#eaeaea"));
-                    btn.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            try {
-                                Number_Template series = new Number_Template();
-                                Intent it = new Intent(getApplicationContext(), series.getClass());
-                                Bundle bundle = new Bundle();
-                                bundle.putString("des", describe + "_" + con);
-                                bundle.putString("show", show);
-                                it.putExtras(bundle);
-                                startActivity(it);
-                            } catch (Exception e) {
-                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
-                            }
+                    btn.setOnClickListener(v -> {
+                        try {
+                            Number_Template series = new Number_Template();
+                            Intent it = new Intent(getApplicationContext(), series.getClass());
+                            Bundle bundle = new Bundle();
+                            bundle.putString("des", describe + "_" + con);
+                            bundle.putString("show", show);
+                            it.putExtras(bundle);
+                            startActivity(it);
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
                         }
                     });
                     ll_t.addView(btn);
@@ -163,16 +161,13 @@ public class Series_Template extends AppCompatActivity {
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srl.setRefreshing(true);
-                LinearLayout ll = findViewById(R.id.ll_t);
-                ll.removeAllViews();
-                list.clear();
-                urls.clear();
-                new isNetworkOk().start();
-            }
+        srl.setOnRefreshListener(() -> {
+            srl.setRefreshing(true);
+            LinearLayout ll = findViewById(R.id.ll_t);
+            ll.removeAllViews();
+            list.clear();
+            urls.clear();
+            new isNetworkOk().start();
         });
         srl.setRefreshing(true);
         LinearLayout ll_t = findViewById(R.id.ll_t);
@@ -182,6 +177,7 @@ public class Series_Template extends AppCompatActivity {
 
 
         new isNetworkOk().start();
+        if (GlobalSettings.isLogged) new GlobalSettings.logger("浏览品牌_" + show).start();
 
     }
 

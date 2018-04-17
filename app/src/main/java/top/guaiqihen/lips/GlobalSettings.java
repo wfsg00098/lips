@@ -3,11 +3,13 @@ package top.guaiqihen.lips;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -17,12 +19,11 @@ import java.security.MessageDigest;
 public class GlobalSettings {
     static boolean AutoUpdate = true;
     static int ThemeColor = Color.parseColor("#FF4081");
-    static boolean isLogged = false;
+    static boolean isLogged;
     static String username;
     static String password;
     static String nickname;
     private static SQLiteDatabase db;
-
 
 
     static boolean isLike(String item){
@@ -110,27 +111,43 @@ public class GlobalSettings {
 
     static void LoadSettings(String path) {
         db = SQLiteDatabase.openOrCreateDatabase(path + "/settings.db", null);
-        String sql = "create table if not exists settings(AutoUpdate text , ThemeColor text, username text, password text, nickname text)";
+        String sql = "create table if not exists settings(AutoUpdate text , ThemeColor text, username text, password text, nickname text, islogged text)";
         db.execSQL(sql);
-        Cursor cursor = db.query("settings", new String[]{"AutoUpdate", "ThemeColor", "username", "password", "nickname"}, null, null, null, null, null);
+        Cursor cursor = db.query("settings", new String[]{"AutoUpdate", "ThemeColor", "username", "password", "nickname", "islogged"}, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            sql = "insert into settings values('true'," + Integer.toString(Color.parseColor("#FF4081")) + ",null,null,null)";
+            sql = "insert into settings values('true'," + Integer.toString(Color.parseColor("#FF4081")) + ",null,null,null,null)";
             db.execSQL(sql);
             username = "";
             password = "";
             nickname = "";
+            isLogged = false;
         } else {
             cursor.moveToFirst();
             AutoUpdate = cursor.getString(0).equals("true");
             ThemeColor = cursor.getInt(1);
             username = cursor.getString(2);
-            password = cursor.getString(3);
             nickname = cursor.getString(4);
-            new Thread(GlobalSettings::Login).start();
+            isLogged = cursor.getString(5).equals("true");
         }
         cursor.close();
     }
 
+    static class logger extends Thread{
+        private String operation;
+        logger(String operation){
+            this.operation = operation;
+        }
+        @Override
+        public void run() {
+            try {
+                HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_log.php?username=" + GlobalSettings.username + "&operation=" + operation).openConnection();
+                url.connect();
+                if (url.getResponseCode() == 200) return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     static void SetAutoUpdate(boolean is) {
         AutoUpdate = is;
         String sql;
@@ -155,7 +172,7 @@ public class GlobalSettings {
             String success = json.getString("status");
             String nick = json.getString("nickname");
             if (success.equals("success")) {
-                String sql = "update settings set username='" + username +"' , password='" + password +"'";
+                String sql = "update settings set username='" + username +"' , password='" + password +"' , islogged='true' , nickname='" + nick +"'";
                 db.execSQL(sql);
                 isLogged = true;
                 nickname = nick;
@@ -173,6 +190,8 @@ public class GlobalSettings {
         username = "";
         password = "";
         nickname = "";
+        String sql = "update settings set username='" + username +"' , password='" + password +"' , islogged='false'";
+        db.execSQL(sql);
     }
 
     static boolean Register(){

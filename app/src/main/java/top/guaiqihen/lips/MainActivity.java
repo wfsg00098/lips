@@ -39,17 +39,19 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity {
-    final static int version = 106;
+    final static int version = 108;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     SwipeRefreshLayout srl;
@@ -119,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonobj = new JSONObject(temp);
                 int count = jsonobj.getInt("count");
+                try{
+                    int maintenance = jsonobj.getInt("maintenance");
+                    if (maintenance == 1){
+                        Toast.makeText(MainActivity.this, "服务器维护中！", Toast.LENGTH_LONG + 5).show();
+                        MainActivity.this.finish();
+                    }
+                }catch(Exception ignored){}
+
                 LinearLayout ll = findViewById(R.id.LL);
                 int i;
                 for (i = 0; i < count; i++) {
@@ -371,6 +381,9 @@ public class MainActivity extends AppCompatActivity {
         list.clear();
         urls.clear();
         new isNetworkOk().start();
+
+        if (GlobalSettings.isLogged) new GlobalSettings.logger("打开APP主界面_版本" + String.valueOf(version)).start();
+
         try {
             verifyStoragePermissions(this);
             File fl = new File(getExternalCacheDir().getAbsolutePath(), "TestCache.txt");
