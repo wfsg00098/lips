@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -92,11 +93,7 @@ public class MainActivity extends AppCompatActivity {
             if (msg.what <= version) {
                 return;
             }
-            if (msg.what > version) {
-                ShowUpdate(msg.what, msg.obj.toString());
-                return;
-            }
-            Toast.makeText(MainActivity.this, "无法检查更新", Toast.LENGTH_LONG + 5).show();
+            ShowUpdate(msg.what, msg.obj.toString());
         }
     };
     @SuppressLint("HandlerLeak")
@@ -332,15 +329,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    int max(int a, int b) {
+        if (a >= b) return a;
+        else return b;
+    }
+
+    int min(int a, int b) {
+        if (a <= b) return a;
+        else return b;
+    }
+
+    boolean reverse(int r, int g, int b) {
+        double MIN, MAX, L;
+        MAX = (double) max(r, max(g, b)) / 255.0;
+        MIN = (double) min(r, min(g, b)) / 255.0;
+        L = (MAX + MIN) / 2.0;
+        return L > 0.5;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        GlobalSettings.LoadSettings(getApplicationContext().getFilesDir().getPath());
+
+
         this.setTitle("选择品牌");
-        new GetUpdate().start();
+        if (GlobalSettings.AutoUpdate) new GetUpdate().start();
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.parseColor("#FF4081"));
+            getWindow().setNavigationBarColor(GlobalSettings.ThemeColor);
+            getWindow().setStatusBarColor(GlobalSettings.ThemeColor);
+        }
+
+        int red = (GlobalSettings.ThemeColor & 0xff0000) >> 16;
+        int green = (GlobalSettings.ThemeColor & 0x00ff00) >> 8;
+        int blue = GlobalSettings.ThemeColor & 0x0000ff;
+        if (reverse(red, green, blue)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
         }
 
 
@@ -375,10 +406,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
         }
-
-
     }
-
 
     private int mBackKeyPressedTimes = 0;
 
