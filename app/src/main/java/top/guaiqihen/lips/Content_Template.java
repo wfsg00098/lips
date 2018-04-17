@@ -156,31 +156,6 @@ public class Content_Template extends AppCompatActivity {
         }
     };
 
-    public static String sha1(String info) {
-        byte[] digesta = null;
-        try {
-            MessageDigest alga = MessageDigest.getInstance("SHA-1");
-            alga.update(info.getBytes());
-            digesta = alga.digest();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return byte2hex(digesta);
-    }
-
-    public static String byte2hex(byte[] b) {
-        StringBuilder hs = new StringBuilder();
-        String stmp;
-        for (byte aB : b) {
-            stmp = (Integer.toHexString(aB & 0XFF));
-            if (stmp.length() == 1) {
-                hs.append("0").append(stmp);
-            } else {
-                hs.append(stmp);
-            }
-        }
-        return hs.toString();
-    }
 
     private String covert_quot(String str) {
         return str.replace("&quot;", "\"");
@@ -188,7 +163,7 @@ public class Content_Template extends AppCompatActivity {
 
     private Bitmap getURLimage(String url) {
         Bitmap bmp = null;
-        File fl = new File(getExternalCacheDir().getAbsolutePath(), sha1(url));
+        File fl = new File(getExternalCacheDir().getAbsolutePath(), GlobalSettings.sha1(url));
         try {
 
             if (!first || !fl.exists()) {

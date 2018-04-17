@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
 
 public class GlobalSettings {
     static boolean AutoUpdate = true;
@@ -20,7 +21,7 @@ public class GlobalSettings {
     static String username;
     static String password;
     static String nickname;
-    static SQLiteDatabase db;
+    private static SQLiteDatabase db;
 
 
 
@@ -125,7 +126,7 @@ public class GlobalSettings {
             username = cursor.getString(2);
             password = cursor.getString(3);
             nickname = cursor.getString(4);
-            Login();
+            new Thread(GlobalSettings::Login).start();
         }
         cursor.close();
     }
@@ -144,27 +145,27 @@ public class GlobalSettings {
         db.execSQL(sql);
     }
 
-    static void Login() {
-        class login extends Thread {
-            @Override
-            public void run() {
-                try {
-                    HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_login.php?username=" + username + "&password=" + password).openConnection();
-                    url.connect();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
-                    br.readLine();
-                    JSONObject json = new JSONObject(br.readLine());
-                    String success = json.getString("status");
-                    String nick = json.getString("nickname");
-                    if (success.equals("success")) {
-                        isLogged = true;
-                        nickname = nick;
-                    }
-                } catch (Exception ignored) {
-                }
+    static boolean Login() {
+        try {
+            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_login.php?username=" + username + "&password=" + password).openConnection();
+            url.connect();
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
+            br.readLine();
+            JSONObject json = new JSONObject(br.readLine());
+            String success = json.getString("status");
+            String nick = json.getString("nickname");
+            if (success.equals("success")) {
+                String sql = "update settings set username='" + username +"' , password='" + password +"'";
+                db.execSQL(sql);
+                isLogged = true;
+                nickname = nick;
+                password = "";
+                return true;
+            }else{
+                return false;
             }
-        }
-        new login().start();
+        } catch (Exception ignored) {}
+        return false;
     }
 
     static void Logout() {
@@ -174,6 +175,19 @@ public class GlobalSettings {
         nickname = "";
     }
 
+    static boolean Register(){
+        try {
+            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_register.php?username=" + username + "&password=" + password + "&nickname=" + nickname).openConnection();
+            url.connect();
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
+            br.readLine();
+            JSONObject json = new JSONObject(br.readLine());
+            String success = json.getString("status");
+            return success.equals("success");
+
+        } catch (Exception ignored) {}
+        return false;
+    }
 
     private static String getFormatSize(double size) {
         double kiloByte = size / 1024;
@@ -233,6 +247,32 @@ public class GlobalSettings {
                 item.delete();
             }
         }
+    }
+
+    static String sha1(String info) {
+        byte[] digesta = null;
+        try {
+            MessageDigest alga = MessageDigest.getInstance("SHA-1");
+            alga.update(info.getBytes());
+            digesta = alga.digest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return byte2hex(digesta);
+    }
+
+    private static String byte2hex(byte[] b) {
+        StringBuilder hs = new StringBuilder();
+        String stmp;
+        for (byte aB : b) {
+            stmp = (Integer.toHexString(aB & 0XFF));
+            if (stmp.length() == 1) {
+                hs.append("0").append(stmp);
+            } else {
+                hs.append(stmp);
+            }
+        }
+        return hs.toString();
     }
 
 }

@@ -32,6 +32,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Settings" />
+        <activity android:name=".Login" />
+        <activity android:name=".Register" />
+        <activity android:name=".User_Manager"></activity>
     </application>
 
 </manifest>

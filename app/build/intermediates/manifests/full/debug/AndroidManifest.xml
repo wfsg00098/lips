@@ -39,6 +39,9 @@
             </intent-filter>
         </activity>
         <activity android:name="top.guaiqihen.lips.Settings" />
+        <activity android:name="top.guaiqihen.lips.Login" />
+        <activity android:name="top.guaiqihen.lips.Register" />
+        <activity android:name="top.guaiqihen.lips.User_Manager" />
 
         <meta-data
             android:name="android.support.VERSION"
