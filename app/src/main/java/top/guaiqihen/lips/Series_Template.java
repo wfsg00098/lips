@@ -30,6 +30,9 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -156,15 +159,25 @@ public class Series_Template extends AppCompatActivity {
 
     private Bitmap getURLimage(String url) {
         Bitmap bmp = null;
+        File fl = new File(getExternalCacheDir().getAbsolutePath(), GlobalSettings.sha1(url));
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setConnectTimeout(6000);
-            conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bmp = BitmapFactory.decodeStream(is);
-            is.close();
+
+            if (!first || !fl.exists()) {
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(6000);
+                conn.setDoInput(true);
+                conn.setUseCaches(false);
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                FileOutputStream fos = new FileOutputStream(fl);
+                int temp;
+                while ((temp = is.read()) != -1) fos.write(temp);
+                fos.flush();
+                is.close();
+            }
+            FileInputStream fis = new FileInputStream(fl);
+            bmp = BitmapFactory.decodeStream(fis);
+            fis.close();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
         }

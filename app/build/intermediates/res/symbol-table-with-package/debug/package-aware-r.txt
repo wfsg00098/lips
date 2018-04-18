@@ -787,9 +787,10 @@ int drawable notification_template_icon_low_bg 0x7f07006e
 int drawable notification_tile_bg 0x7f07006f
 int drawable notify_panel_notification_icon_bg 0x7f070070
 int drawable rect_grey 0x7f070071
-int drawable splash_screen 0x7f070072
-int drawable tooltip_frame_dark 0x7f070073
-int drawable tooltip_frame_light 0x7f070074
+int drawable splash 0x7f070072
+int drawable splash_screen 0x7f070073
+int drawable tooltip_frame_dark 0x7f070074
+int drawable tooltip_frame_light 0x7f070075
 int id ALT 0x7f080000
 int id AboutButton 0x7f080001
 int id AboutTextView 0x7f080002

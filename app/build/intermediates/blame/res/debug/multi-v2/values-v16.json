@@ -4,7 +4,17 @@
             "outputFile": "C:\\Users\\Badegg\\AndroidStudioProjects\\lips\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v16\\values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\98c1ff8bcdfab85c8e3197240811f126\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\308accc212594b6a1966e267dfe3cce5\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\721d2cebfe7a2dc26e508a13ff7f58db\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -20,16 +30,6 @@
                         "endLines": "6",
                         "endColumns": "12",
                         "endOffsets": "289"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Badegg\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-26.1.0.aar\\fd8856bd1bcb0a281959cff2743a8432\\res\\values-v16\\values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
                     }
                 }
             ]
