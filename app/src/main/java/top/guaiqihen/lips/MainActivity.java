@@ -53,7 +53,7 @@ import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity {
-    final static int version = 110;
+    final static int version = 111;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     SwipeRefreshLayout srl;

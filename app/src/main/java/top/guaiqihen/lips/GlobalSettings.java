@@ -125,7 +125,7 @@ public class GlobalSettings {
         db.execSQL(sql);
         Cursor cursor = db.query("settings", new String[]{"AutoUpdate", "ThemeColor", "username", "password", "nickname", "islogged"}, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            sql = "insert into settings values('true'," + Integer.toString(Color.parseColor("#FF4081")) + ",null,null,null,null)";
+            sql = "insert into settings values('true'," + Integer.toString(Color.parseColor("#FF4081")) + ",'','','','')";
             db.execSQL(sql);
             username = "";
             password = "";
