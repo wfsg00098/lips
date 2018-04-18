@@ -3,8 +3,6 @@ package top.guaiqihen.lips;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -13,8 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.*;
-import android.provider.Settings;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -29,7 +25,6 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -40,24 +35,6 @@ public class Number_Template extends AppCompatActivity {
     SwipeRefreshLayout srl;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
-    @SuppressLint("HandlerLeak")
-    private Handler handler= new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            int temp=msg.what;
-            if (temp<list.size()){
-                Bitmap bmp=(Bitmap)msg.obj;
-                list.get(temp).setImageBitmap(bmp);
-            }
-        }
-    };
-    @SuppressLint("HandlerLeak")
-    private Handler stoprefresh= new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            if (srl.isRefreshing()) srl.setRefreshing(false);
-        }
-    };
     @SuppressLint("HandlerLeak")
     private Handler ToastHandler= new Handler(){
         @Override
@@ -77,7 +54,7 @@ public class Number_Template extends AppCompatActivity {
                 LinearLayout ll_n = findViewById(R.id.ll_n);
                 int i;
                 for (i =0; i <count; i++) {
-                    Button btn = new Button(getApplicationContext());
+                    Button btn = new Button(Number_Template.this);
                     final String con = jsonobj.getString("number" + Integer.toString(i + 1));
                     final String show = con + " - " + covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
                     final String color = jsonobj.getString("color" + Integer.toString(i + 1));
@@ -124,23 +101,6 @@ public class Number_Template extends AppCompatActivity {
 
     private String covert_quot(String str) {
         return str.replace("&quot;", "\"");
-    }
-
-    private Bitmap getURLimage(String url) {
-        Bitmap bmp = null;
-        try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setConnectTimeout(6000);
-            conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bmp = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
-        }
-        return bmp;
     }
 
     @Override
@@ -191,26 +151,6 @@ public class Number_Template extends AppCompatActivity {
 
         new isNetworkOk().start();
         if (GlobalSettings.isLogged) new GlobalSettings.logger("浏览系列_" + show).start();
-    }
-
-    final private class getImage extends Thread{
-        @Override
-        public void run() {
-            try{
-                for (int i=0;i<list.size();i++) {
-                    Bitmap bmp = getURLimage(urls.get(i));
-                    Message msg = new Message();
-                    msg.obj = bmp;
-                    msg.what = i;
-                    handler.sendMessage(msg);
-                }
-                stoprefresh.sendEmptyMessage(1);
-            }catch (Exception e) {
-                Message msg = new Message();
-                msg.obj = e.toString();
-                ToastHandler.sendMessage(msg);
-            }
-        }
     }
 
     final private class isNetworkOk extends Thread{

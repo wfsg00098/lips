@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -26,10 +28,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,23 +42,22 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity {
-    final static int version = 108;
+    final static int version = 110;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     SwipeRefreshLayout srl;
+    private boolean first = true;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -121,44 +124,86 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonobj = new JSONObject(temp);
                 int count = jsonobj.getInt("count");
-                try{
-                    int maintenance = jsonobj.getInt("maintenance");
-                    if (maintenance == 1){
-                        Toast.makeText(MainActivity.this, "服务器维护中！", Toast.LENGTH_LONG + 5).show();
+                int maintenance = 0;
+                try {
+                    maintenance = jsonobj.getInt("maintenance");
+                } catch (Exception ignored) {
+                }
+
+                if (maintenance == 1) {
+                    Toast.makeText(MainActivity.this, "服务器维护中！", Toast.LENGTH_LONG + 5).show();
+                    MainActivity.this.finish();
+
+                } else {
+                    if (GlobalSettings.AutoUpdate) new GetUpdate().start();
+                    LinearLayout ll = findViewById(R.id.LL);
+                    int i;
+                    for (i = 0; i < count; i++) {
+                        final String show = covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
+                        final String con = jsonobj.getString("name" + Integer.toString(i + 1));
+                        final String img_link = jsonobj.getString("img" + Integer.toString(i + 1));
+
+                        if (!img_link.equals("null")) {
+                            ImageButton ibtn = new ImageButton(MainActivity.this);
+                            ibtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                            ibtn.setScaleType(ImageButton.ScaleType.FIT_XY);
+                            ibtn.setAdjustViewBounds(true);
+                            TypedValue typedValue = new TypedValue();
+                            ibtn.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                            int[] attribute = new int[]{android.R.attr.selectableItemBackground};
+                            TypedArray typedArray = ibtn.getContext().getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                            ibtn.setBackground(typedArray.getDrawable(0));
+                            list.add(ibtn);
+                            urls.add(img_link);
+                            ibtn.setOnClickListener(v -> {
+                                try {
+                                    Series_Template series = new Series_Template();
+                                    Intent it = new Intent(getApplicationContext(), series.getClass());
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("des", con);
+                                    bundle.putString("show", show);
+                                    it.putExtras(bundle);
+                                    startActivity(it);
+                                } catch (Exception e) {
+                                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
+                                }
+                            });
+                            ll.addView(ibtn);
+                        }
+
+                        Button btn = new Button(MainActivity.this);
+                        btn.setText(show);
+                        btn.setTextColor(Color.parseColor("#000000"));
+                        btn.setAllCaps(false);
+                        TypedValue typedValue = new TypedValue();
+                        btn.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                        int[] attribute = new int[]{android.R.attr.selectableItemBackground};
+                        TypedArray typedArray = btn.getContext().getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                        btn.setBackground(typedArray.getDrawable(0));
+                        btn.setOnClickListener(v -> {
+                            try {
+                                Series_Template series = new Series_Template();
+                                Intent it = new Intent(getApplicationContext(), series.getClass());
+                                Bundle bundle = new Bundle();
+                                bundle.putString("des", con);
+                                bundle.putString("show", show);
+                                it.putExtras(bundle);
+                                startActivity(it);
+                            } catch (Exception e) {
+                                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
+                            }
+                        });
+                        ll.addView(btn);
+                    }
+                    if (list.size() != 0) new getImage().start();
+                    if (i == 0) {
+                        Toast.makeText(MainActivity.this, "这里还没有东西呢，过会儿再来吧～", Toast.LENGTH_LONG + 5).show();
                         MainActivity.this.finish();
                     }
-                }catch(Exception ignored){}
+                    if (list.size() == 0 && srl.isRefreshing()) srl.setRefreshing(false);
+                }
 
-                LinearLayout ll = findViewById(R.id.LL);
-                int i;
-                for (i = 0; i < count; i++) {
-                    Button btn = new Button(MainActivity.this);
-                    final String show = covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
-                    btn.setText(show);
-                    final String con = jsonobj.getString("name" + Integer.toString(i + 1));
-                    btn.setTextColor(Color.parseColor("#000000"));
-                    btn.setBackgroundColor(Color.parseColor("#eaeaea"));
-                    btn.setAllCaps(false);
-                    btn.setOnClickListener(v -> {
-                        try {
-                            Series_Template series = new Series_Template();
-                            Intent it = new Intent(getApplicationContext(), series.getClass());
-                            Bundle bundle = new Bundle();
-                            bundle.putString("des", con);
-                            bundle.putString("show", show);
-                            it.putExtras(bundle);
-                            startActivity(it);
-                        } catch (Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
-                        }
-                    });
-                    ll.addView(btn);
-                }
-                if (i == 0) {
-                    Toast.makeText(MainActivity.this, "这里还没有东西呢，过会儿再来吧～", Toast.LENGTH_LONG + 5).show();
-                    MainActivity.this.finish();
-                }
-                if (list.size() == 0 && srl.isRefreshing()) srl.setRefreshing(false);
+
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
             }
@@ -166,6 +211,53 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private Bitmap getURLimage(String url) {
+        Bitmap bmp = null;
+        File fl = new File(getExternalCacheDir().getAbsolutePath(), GlobalSettings.sha1(url));
+        try {
+
+            if (!first || !fl.exists()) {
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(6000);
+                conn.setDoInput(true);
+                conn.setUseCaches(false);
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                FileOutputStream fos = new FileOutputStream(fl);
+                int temp;
+                while ((temp = is.read()) != -1) fos.write(temp);
+                fos.flush();
+                is.close();
+            }
+            FileInputStream fis = new FileInputStream(fl);
+            bmp = BitmapFactory.decodeStream(fis);
+            fis.close();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
+        }
+        return bmp;
+    }
+
+    final private class getImage extends Thread {
+        @Override
+        public void run() {
+            try {
+                for (int i = 0; i < list.size(); i++) {
+                    Bitmap bmp = getURLimage(urls.get(i));
+                    Message msg = new Message();
+                    msg.obj = bmp;
+                    msg.what = i;
+                    handler.sendMessage(msg);
+                }
+                stoprefresh.sendEmptyMessage(1);
+            } catch (Exception e) {
+                Message msg = new Message();
+                msg.obj = e.toString();
+                ToastHandler.sendMessage(msg);
+            }
+        }
+    }
 
     final private class GetUpdate extends Thread {
         @Override
@@ -343,7 +435,6 @@ public class MainActivity extends AppCompatActivity {
 
         GlobalSettings.LoadSettings(getApplicationContext().getFilesDir().getPath());
 
-        if (GlobalSettings.AutoUpdate) new GetUpdate().start();
 
         SpannableString msp = new SpannableString("选择品牌");
         msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -373,6 +464,7 @@ public class MainActivity extends AppCompatActivity {
             ll.removeAllViews();
             list.clear();
             urls.clear();
+            first = false;
             new isNetworkOk().start();
         });
         srl.setRefreshing(true);
@@ -382,7 +474,8 @@ public class MainActivity extends AppCompatActivity {
         urls.clear();
         new isNetworkOk().start();
 
-        if (GlobalSettings.isLogged) new GlobalSettings.logger("打开APP主界面_版本" + String.valueOf(version)).start();
+        if (GlobalSettings.isLogged)
+            new GlobalSettings.logger("打开APP主界面_版本" + String.valueOf(version)).start();
 
         try {
             verifyStoragePermissions(this);
@@ -394,6 +487,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG + 5).show();
         }
+
     }
 
     private int mBackKeyPressedTimes = 0;
@@ -452,8 +546,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
 }

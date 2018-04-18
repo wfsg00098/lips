@@ -34,7 +34,8 @@
         <activity android:name=".Settings" />
         <activity android:name=".Login" />
         <activity android:name=".Register" />
-        <activity android:name=".User_Manager"></activity>
+        <activity android:name=".User_Manager" />
+        <activity android:name=".User_Like"></activity>
     </application>
 
 </manifest>

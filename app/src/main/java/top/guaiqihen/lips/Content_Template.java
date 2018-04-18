@@ -22,6 +22,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +36,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.MessageDigest;
 import java.util.Vector;
 
 public class Content_Template extends AppCompatActivity {
-    String color;
-    String describe;
+    String color, describe, show;
     SwipeRefreshLayout srl;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
@@ -65,6 +64,22 @@ public class Content_Template extends AppCompatActivity {
         }
     };
     @SuppressLint("HandlerLeak")
+    private Handler likeButtonHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Switch sw = (Switch) msg.obj;
+            if (msg.what == 1) {
+                sw.setChecked(true);
+                sw.setText("已收藏");
+                sw.setTextColor(Color.RED);
+            } else {
+                sw.setChecked(false);
+                sw.setText("收藏");
+                sw.setTextColor(Color.BLACK);
+            }
+        }
+    };
+    @SuppressLint("HandlerLeak")
     private Handler ToastHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -81,11 +96,51 @@ public class Content_Template extends AppCompatActivity {
                 JSONObject jsonobj = new JSONObject(temp);
                 int count = jsonobj.getInt("count");
                 LinearLayout ll_c = findViewById(R.id.ll_c);
+                if (GlobalSettings.isLogged) {
+                    Switch sw = new Switch(Content_Template.this);
+                    sw.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    sw.setTextSize(24);
+                    sw.setOnClickListener(v -> {
+                        if (sw.isChecked()) {
+                            new Thread(() -> {
+                                Message msg1 = new Message();
+                                msg1.obj = sw;
+                                if (GlobalSettings.setLike("number", describe, show, String.valueOf(Color.parseColor(color)))) {
+                                    msg1.what = 1;
+                                } else {
+                                    msg1.what = 0;
+                                }
+                                likeButtonHandler.sendMessage(msg1);
+                            }).start();
+
+                        } else {
+                            new Thread(() -> {
+                                Message msg1 = new Message();
+                                msg1.obj = sw;
+                                if (GlobalSettings.disLike(describe)) {
+                                    msg1.what = 0;
+                                } else {
+                                    msg1.what = 1;
+                                }
+                                likeButtonHandler.sendMessage(msg1);
+                            }).start();
+
+                        }
+                    });
+                    ll_c.addView(sw);
+                    new Thread(() -> {
+                        Message msg1 = new Message();
+                        msg1.obj = sw;
+                        if (GlobalSettings.isLike(describe)) msg1.what = 1;
+                        else msg1.what = 0;
+                        likeButtonHandler.sendMessage(msg1);
+                    }).start();
+                }
                 int i;
                 for (i = 0; i < count; i++) {
                     if (jsonobj.getString("type" + Integer.toString(i + 1)).equals("str")) {
-                        TextView view = new TextView(getApplicationContext());
-                        view.setTextAppearance(getApplicationContext(), R.style.TextAppearance_AppCompat_Body1);
+                        TextView view = new TextView(Content_Template.this);
+                        view.setTextAppearance(Content_Template.this, R.style.TextAppearance_AppCompat_Body1);
                         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(jsonobj.getString("size" + Integer.toString(i + 1))));
                         if (jsonobj.getString("align" + Integer.toString(i + 1)).equals("left")) {
                             view.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -110,7 +165,7 @@ public class Content_Template extends AppCompatActivity {
                         ll_c.addView(view);
                     }
                     if (jsonobj.getString("type" + Integer.toString(i + 1)).equals("link")) {
-                        TextView view = new TextView(getApplicationContext());
+                        TextView view = new TextView(Content_Template.this);
                         view.setAutoLinkMask(Linkify.WEB_URLS);
                         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(jsonobj.getString("size" + Integer.toString(i + 1))));
                         if (jsonobj.getString("align" + Integer.toString(i + 1)).equals("left")) {
@@ -132,7 +187,7 @@ public class Content_Template extends AppCompatActivity {
                         ll_c.addView(view);
                     }
                     if (jsonobj.getString("type" + Integer.toString(i + 1)).equals("img")) {
-                        ImageView img = new ImageView(getApplicationContext());
+                        ImageView img = new ImageView(Content_Template.this);
                         img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                         img.setScaleType(ImageView.ScaleType.FIT_XY);
                         img.setAdjustViewBounds(true);
@@ -147,6 +202,7 @@ public class Content_Template extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "这里还没有东西呢，过会儿再来吧～", Toast.LENGTH_LONG + 5).show();
                     Content_Template.this.finish();
                 }
+
                 if (list.size() == 0 && srl.isRefreshing()) srl.setRefreshing(false);
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG + 5).show();
@@ -192,7 +248,11 @@ public class Content_Template extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_template);
-
+        Bundle bundle = this.getIntent().getExtras();
+        assert bundle != null;
+        describe = bundle.getString("des");
+        color = bundle.getString("color");
+        show = bundle.getString("show");
 
         srl = findViewById(R.id.content_srl);
         srl.setColorSchemeResources(android.R.color.holo_blue_light,
@@ -213,11 +273,7 @@ public class Content_Template extends AppCompatActivity {
         ll_c.removeAllViews();
         list.clear();
         urls.clear();
-        Bundle bundle = this.getIntent().getExtras();
-        assert bundle != null;
-        describe = bundle.getString("des");
-        color = bundle.getString("color");
-        String show = bundle.getString("show");
+
         SpannableString msp = new SpannableString("色号介绍 - " + show);
         msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         int cl = Color.parseColor(color);
@@ -240,6 +296,8 @@ public class Content_Template extends AppCompatActivity {
         this.setTitle(msp);
         new isNetworkOk().start();
         if (GlobalSettings.isLogged) new GlobalSettings.logger("浏览色号_" + show).start();
+
+
     }
 
     final private class getImage extends Thread {
