@@ -6,13 +6,14 @@
     "apkInfo": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 10
+      "versionCode": 10,
+      "versionName": "1.10",
+      "enabled": true,
+      "outputFile": "app-release.apk",
+      "fullName": "release",
+      "baseName": "release"
     },
     "path": "app-release.apk",
-    "properties": {
-      "packageId": "top.guaiqihen.lips",
-      "split": "",
-      "minSdkVersion": "17"
-    }
+    "properties": {}
   }
 ]
