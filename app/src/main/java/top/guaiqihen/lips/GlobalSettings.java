@@ -3,7 +3,6 @@ package top.guaiqihen.lips;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -24,7 +23,6 @@ public class GlobalSettings {
     static String password;
     static String nickname;
     private static SQLiteDatabase db;
-
 
     static boolean isLike(String item){
         try{
@@ -52,9 +50,21 @@ public class GlobalSettings {
         }
     }
 
-    static boolean setLike(String type ,String item){
+    static JSONObject getLog() {
         try{
-            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_setlike.php?username=" + username + "&type=" + type + "&item=" + item).openConnection();
+            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_getlog.php?username=" + username).openConnection();
+            url.connect();
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
+            br.readLine();
+            return new JSONObject(br.readLine());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    static boolean setLike(String type, String item, String show, String color) {
+        try {
+            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_setlike.php?username=" + username + "&type=" + type + "&item=" + item + "&show=" + show + "&color=" + color).openConnection();
             url.connect();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
             br.readLine();
@@ -96,7 +106,7 @@ public class GlobalSettings {
         MAX = (double) max(r, max(g, b)) / 255.0;
         MIN = (double) min(r, min(g, b)) / 255.0;
         L = (MAX + MIN) / 2.0;
-        return L > 0.7;
+        return L > 0.6;
     }
     static boolean reverse() {
         int r = (ThemeColor & 0xff0000) >> 16;
@@ -106,7 +116,7 @@ public class GlobalSettings {
         MAX = (double) max(r, max(g, b)) / 255.0;
         MIN = (double) min(r, min(g, b)) / 255.0;
         L = (MAX + MIN) / 2.0;
-        return L > 0.7;
+        return L > 0.6;
     }
 
     static void LoadSettings(String path) {
@@ -148,6 +158,18 @@ public class GlobalSettings {
             }
         }
     }
+
+    static void SavePass() {
+        String sql = "update settings set password='" + password + "'";
+        db.execSQL(sql);
+    }
+
+    static void SaveNick() {
+        String sql = "update settings set nickname='" + nickname + "'";
+        db.execSQL(sql);
+    }
+
+
     static void SetAutoUpdate(boolean is) {
         AutoUpdate = is;
         String sql;
@@ -176,7 +198,6 @@ public class GlobalSettings {
                 db.execSQL(sql);
                 isLogged = true;
                 nickname = nick;
-                password = "";
                 return true;
             }else{
                 return false;

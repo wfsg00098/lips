@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -26,7 +26,6 @@ public class Login extends AppCompatActivity {
     private Handler LoginResult = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            GlobalSettings.password = "";
             if (msg.what == 1){
                 Toast.makeText(getApplicationContext(), "登录成功！", Toast.LENGTH_LONG + 5).show();
                 if (GlobalSettings.isLogged) new GlobalSettings.logger("登录").start();

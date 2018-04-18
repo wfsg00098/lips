@@ -3,6 +3,7 @@ package top.guaiqihen.lips;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,8 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,6 +41,7 @@ public class Series_Template extends AppCompatActivity {
     SwipeRefreshLayout srl;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
+    private boolean first = true;
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -74,13 +78,50 @@ public class Series_Template extends AppCompatActivity {
                 LinearLayout ll_t = findViewById(R.id.ll_t);
                 int i;
                 for (i = 0; i < count; i++) {
-                    Button btn = new Button(getApplicationContext());
+
                     final String show = covert_quot(jsonobj.getString("describ" + Integer.toString(i + 1)));
-                    btn.setText(show);
                     final String con = jsonobj.getString("name" + Integer.toString(i + 1));
+                    final String img_link = jsonobj.getString("img" + Integer.toString(i + 1));
+
+                    if (!img_link.equals("null")) {
+                        ImageButton ibtn = new ImageButton(Series_Template.this);
+                        ibtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                        ibtn.setScaleType(ImageButton.ScaleType.FIT_XY);
+                        ibtn.setAdjustViewBounds(true);
+                        TypedValue typedValue = new TypedValue();
+                        ibtn.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                        int[] attribute = new int[]{android.R.attr.selectableItemBackground};
+                        TypedArray typedArray = ibtn.getContext().getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                        ibtn.setBackground(typedArray.getDrawable(0));
+                        list.add(ibtn);
+                        urls.add(img_link);
+                        ibtn.setOnClickListener(v -> {
+                            try {
+                                Series_Template series = new Series_Template();
+                                Intent it = new Intent(getApplicationContext(), series.getClass());
+                                Bundle bundle = new Bundle();
+                                bundle.putString("des", describe + "_" + con);
+                                bundle.putString("show", show);
+                                it.putExtras(bundle);
+                                startActivity(it);
+                            } catch (Exception e) {
+                                Toast.makeText(Series_Template.this, e.toString(), Toast.LENGTH_LONG + 5).show();
+                            }
+                        });
+                        ll_t.addView(ibtn);
+                    }
+
+
+                    Button btn = new Button(Series_Template.this);
+                    btn.setText(show);
                     btn.setAllCaps(false);
                     btn.setTextColor(Color.parseColor("#000000"));
-                    btn.setBackgroundColor(Color.parseColor("#eaeaea"));
+                    TypedValue typedValue = new TypedValue();
+                    btn.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                    int[] attribute = new int[]{android.R.attr.selectableItemBackground};
+                    TypedArray typedArray = btn.getContext().getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                    btn.setBackground(typedArray.getDrawable(0));
+
                     btn.setOnClickListener(v -> {
                         try {
                             Number_Template series = new Number_Template();
@@ -96,6 +137,7 @@ public class Series_Template extends AppCompatActivity {
                     });
                     ll_t.addView(btn);
                 }
+                if (list.size() != 0) new getImage().start();
                 if (i == 0) {
                     Toast.makeText(getApplicationContext(), "这里还没有东西呢，过会儿再来吧～", Toast.LENGTH_LONG + 5).show();
                     Series_Template.this.finish();
@@ -167,6 +209,7 @@ public class Series_Template extends AppCompatActivity {
             ll.removeAllViews();
             list.clear();
             urls.clear();
+            first = false;
             new isNetworkOk().start();
         });
         srl.setRefreshing(true);
