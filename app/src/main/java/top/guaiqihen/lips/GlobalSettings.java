@@ -38,18 +38,6 @@ public class GlobalSettings {
         }
     }
 
-    static JSONObject getLike(){
-        try{
-            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_getlike.php?username=" + username + "&item=!all").openConnection();
-            url.connect();
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
-            br.readLine();
-            return new JSONObject(br.readLine());
-        }catch (Exception e){
-            return null;
-        }
-    }
-
     static JSONObject getLog() {
         try{
             HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_getlog.php?username=" + username).openConnection();

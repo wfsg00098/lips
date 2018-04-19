@@ -53,7 +53,7 @@ import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity {
-    final static int version = 111;
+    final static int version = 112;
     private Vector<ImageView> list = new Vector<>();
     private Vector<String> urls = new Vector<>();
     SwipeRefreshLayout srl;
@@ -449,6 +449,10 @@ public class MainActivity extends AppCompatActivity {
         if (GlobalSettings.reverse()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(Color.BLACK);
+                }
             }
             msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
