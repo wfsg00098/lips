@@ -280,6 +280,11 @@ public class Content_Template extends AppCompatActivity {
         int red = (cl & 0xff0000) >> 16;
         int green = (cl & 0x00ff00) >> 8;
         int blue = cl & 0x0000ff;
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(cl));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(cl);
+            getWindow().setStatusBarColor(cl);
+        }
         if (GlobalSettings.reverse(red, green, blue)) {
             msp.setSpan(new ForegroundColorSpan(Color.BLACK), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -289,12 +294,6 @@ public class Content_Template extends AppCompatActivity {
                     getWindow().setStatusBarColor(Color.BLACK);
                 }
             }
-        }
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(cl));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(cl);
-            getWindow().setStatusBarColor(cl);
         }
 
         this.setTitle(msp);
