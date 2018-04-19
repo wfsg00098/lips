@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 
 public class GlobalSettings {
@@ -26,6 +27,7 @@ public class GlobalSettings {
 
     static boolean isLike(String item){
         try{
+            item = URLEncoder.encode(item, "utf-8");
             HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_getlike.php?username=" + username + "&item=" + item).openConnection();
             url.connect();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
@@ -52,6 +54,8 @@ public class GlobalSettings {
 
     static boolean setLike(String type, String item, String show, String color) {
         try {
+            item = URLEncoder.encode(item, "utf-8");
+            show = URLEncoder.encode(show, "utf-8");
             HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_setlike.php?username=" + username + "&type=" + type + "&item=" + item + "&show=" + show + "&color=" + color).openConnection();
             url.connect();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
@@ -66,6 +70,7 @@ public class GlobalSettings {
 
     static boolean disLike(String item){
         try{
+            item = URLEncoder.encode(item, "utf-8");
             HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_dislike.php?username=" + username  + "&item=" + item).openConnection();
             url.connect();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
@@ -79,20 +84,25 @@ public class GlobalSettings {
     }
 
 
-    static int max(int a, int b) {
-        if (a >= b) return a;
-        else return b;
+    static int max(int a, int b, int c) {
+        if (a >= b && a >= c) return a;
+        if (b >= a && b >= c) return b;
+        if (c >= a && c >= b) return c;
+        return a;
+
     }
 
-    static int min(int a, int b) {
-        if (a <= b) return a;
-        else return b;
+    static int min(int a, int b, int c) {
+        if (a <= b && a <= c) return a;
+        if (b <= a && b <= c) return b;
+        if (c <= a && c <= b) return c;
+        return a;
     }
 
     static boolean reverse(int r, int g, int b) {
         double MIN, MAX, L;
-        MAX = (double) max(r, max(g, b)) / 255.0;
-        MIN = (double) min(r, min(g, b)) / 255.0;
+        MAX = (double) max(r, g, b) / 255.0;
+        MIN = (double) min(r, g, b) / 255.0;
         L = (MAX + MIN) / 2.0;
         return L > 0.6;
     }
@@ -101,8 +111,8 @@ public class GlobalSettings {
         int g = (ThemeColor & 0x00ff00) >> 8;
         int b = ThemeColor & 0x0000ff;
         double MIN, MAX, L;
-        MAX = (double) max(r, max(g, b)) / 255.0;
-        MIN = (double) min(r, min(g, b)) / 255.0;
+        MAX = (double) max(r, g, b) / 255.0;
+        MIN = (double) min(r, g, b) / 255.0;
         L = (MAX + MIN) / 2.0;
         return L > 0.6;
     }
@@ -138,6 +148,7 @@ public class GlobalSettings {
         @Override
         public void run() {
             try {
+                operation = URLEncoder.encode(operation, "utf-8");
                 HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_log.php?username=" + GlobalSettings.username + "&operation=" + operation).openConnection();
                 url.connect();
                 if (url.getResponseCode() == 200) return;
@@ -205,7 +216,8 @@ public class GlobalSettings {
 
     static boolean Register(){
         try {
-            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_register.php?username=" + username + "&password=" + password + "&nickname=" + nickname).openConnection();
+
+            HttpURLConnection url = (HttpURLConnection) new URL("https://lips.guaiqihen.top/user_register.php?username=" + username + "&password=" + password + "&nickname=" + URLEncoder.encode(nickname, "utf-8")).openConnection();
             url.connect();
             BufferedReader br = new BufferedReader(new InputStreamReader(url.getInputStream()));
             br.readLine();
