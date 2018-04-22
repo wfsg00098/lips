@@ -113,7 +113,7 @@ public class Number_Template extends AppCompatActivity {
         describe = bundle.getString("des");
         String show = bundle.getString("show");
 
-        SpannableString msp = new SpannableString("选择系列 - " + show);
+        SpannableString msp = new SpannableString("选择色号 - " + show);
         msp.setSpan(new ForegroundColorSpan(Color.WHITE), 0, msp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
 
