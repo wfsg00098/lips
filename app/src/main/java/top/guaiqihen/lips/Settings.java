@@ -126,6 +126,9 @@ public class Settings extends AppCompatActivity {
                     redBar.setProgress((GlobalSettings.ThemeColor & 0xff0000) >> 16);
                     greenBar.setProgress((GlobalSettings.ThemeColor & 0x00ff00) >> 8);
                     blueBar.setProgress(GlobalSettings.ThemeColor & 0x0000ff);
+                    redtext.setText(String.valueOf(redBar.getProgress()));
+                    greentext.setText(String.valueOf(greenBar.getProgress()));
+                    bluetext.setText(String.valueOf(blueBar.getProgress()));
                     colorview.setImageDrawable(new ColorDrawable(GlobalSettings.ThemeColor));
                 });
 
