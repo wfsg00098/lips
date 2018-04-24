@@ -100,7 +100,7 @@ public class Series_Template extends AppCompatActivity {
                         urls.add(img_link);
                         ibtn.setOnClickListener(v -> {
                             try {
-                                Series_Template series = new Series_Template();
+                                Number_Template series = new Number_Template();
                                 Intent it = new Intent(getApplicationContext(), series.getClass());
                                 Bundle bundle = new Bundle();
                                 bundle.putString("des", describe + "_" + con);
